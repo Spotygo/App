@@ -1,7 +1,7 @@
 workflows:
   ios:
     name: Build iOS app
-    instance_type: macos-latest
+    instance_type: mac_mini # Korrekt: mac_mini, mac_mini_m1, mac_mini_m2, mac_pro, linux, linux_x2, windows_x2
     environment:
       vars:
         EXPO_PASSWORD: EncryptedPassword
