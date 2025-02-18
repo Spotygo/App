@@ -1,17 +1,23 @@
 workflows:
   ios:
-    name: iOS build
-    platform: ios
-    dependencies:
-      pre-cache: true
-    scripts:
+    name: Build iOS app
+    instance_type: macos-latest
+    environment:
+      vars:
+        EXPO_PASSWORD: EncryptedPassword
+    steps:
+      - name: Checkout code
+        action: checkout
       - name: Install dependencies
-        script: |
+        run: |
           npm install
-          cd ios && pod install
       - name: Build iOS app
-        script: |
-          xcodebuild -workspace ios/YourApp.xcworkspace -scheme YourApp -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/build/YourApp.xcarchive
-      - name: Export IPA
-        script: |
-          xcodebuild -exportArchive -archivePath $PWD/build/YourApp.xcarchive -exportPath $PWD/build/YourApp.ipa -exportOptionsPlist ios/exportOptions.plist
+        run: |
+          cd ios && pod install --repo-update
+          npx react-native run-ios --configuration Release
+      - name: Export .ipa file
+        run: |
+          xcodebuild -workspace ios/DoneWithIt.xcworkspace -scheme DoneWithIt -sdk iphoneos -configuration Release clean archive -archivePath $HOME/DoneWithIt.xcarchive
+          xcodebuild -exportArchive -archivePath $HOME/DoneWithIt.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath $HOME/DoneWithIt.ipa
+      - name: Upload .ipa to build artifacts
+        upload: $HOME/DoneWithIt.ipa
