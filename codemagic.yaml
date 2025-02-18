@@ -13,6 +13,7 @@ workflows:
       - script: sudo gem install cocoapods
         script: |
           cd ios
+          sudo gem install cocoapods
           pod install
       - name: xCode build
         script: |
