@@ -1,33 +1,25 @@
 workflows:
-  ios-build:
-    name: iOS build workflow
-    max_build_duration: 120
-    environment:
-      xcode: latest
+  ios:
+    name: Build and Test iOS App
+    max_build_duration: 60
+    platform: ios
     scripts:
       - name: Install dependencies
         script: |
           npm install
           cd ios && pod install
-      - name: Build iOS app
+      - name: Run tests
         script: |
-          cd ios
-          xcodebuild clean build -workspace YourProject.xcworkspace -scheme YourAppScheme -configuration Release
-          # Ersetze 'YourProject.xcworkspace' und 'YourAppScheme' mit den tatsächlichen Werten deines Projekts.
-      - name: Export .ipa file
-        script: |
-          xcodebuild -exportArchive -archivePath YourApp.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath $CM_BUILD_DIR/ipa
-          # Exportiere die .ipa Datei
+          npm test
     artifacts:
-      - build/ios/ipa/*.ipa # Der Pfad zur generierten IPA-Datei
-
-  # Optional: Workflow zum Testen
-  ios-tests:
-    name: iOS tests workflow
-    max_build_duration: 120
-    environment:
-      xcode: latest
-    scripts:
-      - name: Run unit tests
-        script: |
-          cd ios && xcodebuild test -workspace YourProject.xcworkspace -scheme YourAppScheme
+      - build/ios/Build/Products/Debug-iphonesimulator/YourApp.app
+    build:
+      ios:
+        archive:
+          provisioning_profile: "YourProvisioningProfile"
+          distribution_certificate: "YourDistributionCertificate"
+        # Alternative: wenn du Expo nutzt, kann es so aussehen:
+        # expo:
+        #   build:
+        #     ios:
+        #       app_store_connect_api_key: "YOUR_API_KEY"
