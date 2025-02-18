@@ -8,16 +8,20 @@ workflows:
       xcode: 16.0
       cocoapods: 1.11.2
     scripts:
-      # Installiere eine neuere Ruby-Version
+      # Installiere Ruby und CocoaPods
       - name: Install Ruby and CocoaPods
         script: |
           brew install rbenv
           rbenv install 3.1.0
           rbenv global 3.1.0
-          ruby -v  # Überprüfen der Ruby-Version
+          ruby -v
           sudo gem install cocoapods
           cd ios
           pod install --repo-update
+      # Fixiere 'react_native_pods.rb' Pfad
+      - name: Fix React Native Pods Path
+        script: |
+          sed -i '' 's|require Pod::Executable.execute_command("node", ["-p",|require File.join(File.dirname(`node -e '\''require.resolve("react-native/package.json")'\''`), "scripts/react_native_pods.rb")|' ios/Podfile
       # Xcode Build
       - name: xCode build
         script: |
