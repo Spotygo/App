@@ -1,7 +1,7 @@
 workflows:
   ios:
     name: Build iOS app
-    instance_type: mac_mini # Beispiel für die Instanz, ändern je nach Bedarf
+    instance_type: mac_mini_m2
     environment:
       vars:
         EXPO_PASSWORD: EncryptedPassword # Optional, falls du Umgebungsvariablen benötigst
