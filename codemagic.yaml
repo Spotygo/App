@@ -10,7 +10,7 @@ workflows:
     scripts:
       - name: Install npm dependencies
         script: npm install --frozen-lockfile
-      - name: Install CocoaPods dependencies
+      - name: Install CocoaPod dependencies
         script: |
           cd ios
           npm install pod
