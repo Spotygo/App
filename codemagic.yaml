@@ -21,23 +21,3 @@ workflows:
           xcodebuild clean archive -workspace testCiCdReactNative.xcworkspace -scheme testCiCdReactNative -archivePath testCiCdReactNative.xcarchive CODE_SIGNING_ALLOWED=NO | xcpretty
     artifacts:
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
-
-  react-native-android:
-    name: Android Workflow
-    instance_type: mac_mini
-    environment:
-      node: 16.13.2
-    cache:
-      cache_paths:
-        - ~/.gradle/caches
-        - ~/.cache/yarn/v6
-    scripts:
-      - name: Install dependencies
-        script: yarn install --frozen-lockfile
-      - name: Build APK and AAB
-        script: |
-          echo "sdk.dir=$HOME/programs/android-sdk-macosx" > "$FCI_BUILD_DIR/android/local.properties"
-          cd android && ./gradlew bundleRelease assembleRelease
-    artifacts:
-      - android/app/build/outputs/**/*.apk
-      - android/app/build/outputs/**/*.aab
