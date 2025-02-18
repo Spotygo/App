@@ -1,23 +1,24 @@
 workflows:
   ios:
     name: Build iOS app
-    instance_type: mac_mini # Korrekt: mac_mini, mac_mini_m1, mac_mini_m2, mac_pro, linux, linux_x2, windows_x2
+    instance_type: mac_mini # Beispiel für die Instanz, ändern je nach Bedarf
     environment:
       vars:
-        EXPO_PASSWORD: EncryptedPassword
-    steps:
+        EXPO_PASSWORD: EncryptedPassword # Optional, falls du Umgebungsvariablen benötigst
+    scripts:
       - name: Checkout code
-        action: checkout
+        script: git clone https://github.com/Spotygo/App.git
       - name: Install dependencies
-        run: |
+        script: |
           npm install
-      - name: Build iOS app
-        run: |
           cd ios && pod install --repo-update
+      - name: Build iOS app
+        script: |
           npx react-native run-ios --configuration Release
       - name: Export .ipa file
-        run: |
+        script: |
           xcodebuild -workspace ios/DoneWithIt.xcworkspace -scheme DoneWithIt -sdk iphoneos -configuration Release clean archive -archivePath $HOME/DoneWithIt.xcarchive
           xcodebuild -exportArchive -archivePath $HOME/DoneWithIt.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath $HOME/DoneWithIt.ipa
       - name: Upload .ipa to build artifacts
-        upload: $HOME/DoneWithIt.ipa
+        script: |
+          cp $HOME/DoneWithIt.ipa /artifacts/
