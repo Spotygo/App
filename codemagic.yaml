@@ -12,7 +12,8 @@ workflows:
         script: npm install --frozen-lockfile
       - script: sudo gem install cocoapods
         script: |
-          cd ios && npm install pod
+          cd ios
+          pod install
       - name: xCode build
         script: |
           cd ios
