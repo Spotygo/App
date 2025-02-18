@@ -1,10 +1,10 @@
 workflows:
   ios:
     name: Build iOS app
-    instance_type: mac_mini_m2
+    instance_type: mac_mini
     environment:
       vars:
-        EXPO_PASSWORD: EncryptedPassword # Optional, falls du Umgebungsvariablen benötigst
+        EXPO_PASSWORD: EncryptedPassword
     scripts:
       - name: Checkout code
         script: git clone https://github.com/Spotygo/App.git
@@ -14,10 +14,9 @@ workflows:
           cd ios && pod install --repo-update
       - name: Build iOS app
         script: |
-          npx react-native run-ios --configuration Release
+          xcodebuild -workspace ios/DoneWithIt.xcworkspace -scheme DoneWithIt -sdk iphoneos -configuration Release clean archive -archivePath $HOME/DoneWithIt.xcarchive
       - name: Export .ipa file
         script: |
-          xcodebuild -workspace ios/DoneWithIt.xcworkspace -scheme DoneWithIt -sdk iphoneos -configuration Release clean archive -archivePath $HOME/DoneWithIt.xcarchive
           xcodebuild -exportArchive -archivePath $HOME/DoneWithIt.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath $HOME/DoneWithIt.ipa
       - name: Upload .ipa to build artifacts
         script: |
