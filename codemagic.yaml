@@ -8,16 +8,20 @@ workflows:
       xcode: 16.0
       cocoapods: 1.11.2
     scripts:
-      - name: Install npm dependencies
-        script: npm install --frozen-lockfile
-      - name: Install CocoaPods and Pods
+      # Installiere eine neuere Ruby-Version
+      - name: Install Ruby and CocoaPods
         script: |
-          cd ios
+          brew install rbenv
+          rbenv install 3.1.0
+          rbenv global 3.1.0
+          ruby -v  # Überprüfen der Ruby-Version
           sudo gem install cocoapods
-          pod install
+          cd ios
+          pod install --repo-update
+      # Xcode Build
       - name: xCode build
         script: |
           cd ios
-          xcodebuild clean archive -workspace testCiCdReactNative.xcworkspace -scheme testCiCdReactNative -archivePath testCiCdReactNative.xcarchive CODE_SIGNING_ALLOWED=NO | xcpretty
+          xcodebuild clean archive -workspace YourProject.xcworkspace -scheme YourScheme -archivePath YourArchivePath.xcarchive CODE_SIGNING_ALLOWED=NO | xcpretty
     artifacts:
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
