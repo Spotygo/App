@@ -10,7 +10,7 @@ workflows:
     scripts:
       - name: Install npm dependencies
         script: npm install --frozen-lockfile
-      - script: sudo gem install cocoapods
+      - name: Install CocoaPods and Pods
         script: |
           cd ios
           sudo gem install cocoapods
@@ -23,20 +23,21 @@ workflows:
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
 
   react-native-android:
-      name: Android Workflow
-      # `mac_pro` - Building on Mac Pro is a paid feature. Please enable billing to run builds on Mac Pro.
-      instance_type:  mac_mini
-      environment:
-          node: 16.13.2
-      cache:
-        cache_paths:
-          - ~/.gradle/caches
-          - ~/.cache/yarn/v6
-
-      scripts:
-          - yarn install --frozen-lockfile
-          - echo "sdk.dir=$HOME/programs/android-sdk-macosx" > "$FCI_BUILD_DIR/android/local.properties"
-          - cd android && ./gradlew bundleRelease assembleRelease
-      artifacts:
-          - android/app/build/outputs/**/*.apk
-          - android/app/build/outputs/**/*.aab
+    name: Android Workflow
+    instance_type: mac_mini
+    environment:
+      node: 16.13.2
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.cache/yarn/v6
+    scripts:
+      - name: Install dependencies
+        script: yarn install --frozen-lockfile
+      - name: Build APK and AAB
+        script: |
+          echo "sdk.dir=$HOME/programs/android-sdk-macosx" > "$FCI_BUILD_DIR/android/local.properties"
+          cd android && ./gradlew bundleRelease assembleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.apk
+      - android/app/build/outputs/**/*.aab
